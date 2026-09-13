@@ -60,13 +60,13 @@ document.addEventListener("DOMContentLoaded", () => {
     alert(message);
   }
 
-  async function sendMagicLink(email) {
+  async function sendMagicLink(email, shouldCreateUser = false) {
     if (!window.dbClient) throw new Error("Supabase недоступний.");
     const { error } = await window.dbClient.auth.signInWithOtp({
       email,
       options: {
         emailRedirectTo: redirectUrl,
-        shouldCreateUser: false
+        shouldCreateUser
       }
     });
     if (error) throw error;
@@ -210,15 +210,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!window.dbClient) throw new Error("Supabase недоступний.");
       sessionStorage.setItem(pendingProfileKey, JSON.stringify(profile));
 
-      const generatedPassword = `${crypto.randomUUID()}-${crypto.randomUUID()}`;
-      const { error } = await window.dbClient.auth.signUp({
-        email,
-        password: generatedPassword,
-        options: { emailRedirectTo: redirectUrl }
-      });
-      if (error && !error.message.toLowerCase().includes("already registered")) throw error;
-
-      await sendMagicLink(email);
+      await sendMagicLink(email, true);
       modalProfile.classList.add("hidden");
       showMessage("Посилання для входу надіслано на вашу електронну пошту.");
     } catch (error) {
