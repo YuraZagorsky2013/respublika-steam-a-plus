@@ -471,13 +471,32 @@
     </div>
   </div>
 
-  <script src="js/supabase.js?v=3"></script>
+  <div id="modal-forum-profile" class="modal-overlay hidden morph-modal">
+    <div class="modal-card glass-panel forum-profile-modal-card">
+      <div class="modal-header">
+        <h3>Профіль користувача</h3>
+        <button class="modal-close" id="btn-forum-profile-close">&times;</button>
+      </div>
+      <div class="forum-profile-body">
+        <div id="forum-profile-avatar" class="forum-profile-avatar"></div>
+        <h2 id="forum-profile-name">Учень</h2>
+        <p id="forum-profile-username" class="forum-profile-username">@невідомо</p>
+        <div class="forum-profile-details">
+          <div><span>Ім'я та прізвище</span><strong id="forum-profile-full-name">Не вказано</strong></div>
+          <div><span>Клас</span><strong id="forum-profile-grade">Не вказано</strong></div>
+          <div><span>Нікнейм</span><strong id="forum-profile-nickname">Не вказано</strong></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/supabase.js?v=4"></script>
   <script src="js/items.js"></script>
   <script src="js/profile.js?v=5"></script>
   <script src="js/settings.js"></script>
   <script src="js/home.js"></script>
   <script src="js/map.js"></script>
-  <script src="js/forum.js"></script>
+  <script src="js/forum.js?v=2"></script>
   <script src="js/lessons.js"></script>
   <script src="js/info.js"></script>
   <script src="js/hotbar.js"></script>

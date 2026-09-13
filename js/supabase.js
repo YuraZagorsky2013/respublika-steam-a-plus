@@ -79,6 +79,11 @@ async function sendSupabaseMessage(text, replyToText = null) {
         reply_to: replyToText,
         author: authorName,
         avatar: authorAvatar,
+        author_email: savedUser.email || null,
+        author_first_name: savedUser.first_name || null,
+        author_last_name: savedUser.last_name || null,
+        author_grade: savedUser.grade || null,
+        author_username: savedUser.username || null,
         created_at: new Date().toISOString()
       }
     ])

@@ -1056,3 +1056,92 @@ body {
   pointer-events: none !important;
   visibility: hidden !important;
 }
+
+.msg-avatar-button {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.msg-avatar-button:hover {
+  transform: scale(1.08);
+}
+
+.msg-avatar-placeholder {
+  background: var(--accent-color);
+  color: #fff;
+}
+
+.msg-avatar-placeholder svg {
+  width: 20px;
+  height: 20px;
+}
+
+.forum-profile-modal-card {
+  max-width: 380px;
+}
+
+.forum-profile-body {
+  text-align: center;
+}
+
+.forum-profile-avatar {
+  width: 112px;
+  height: 112px;
+  margin: 0 auto 14px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: var(--accent-color);
+  color: #fff;
+  border: 3px solid var(--accent-color);
+}
+
+.forum-profile-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.forum-profile-avatar svg {
+  width: 52px;
+  height: 52px;
+}
+
+.forum-profile-body h2 {
+  margin-bottom: 4px;
+}
+
+.forum-profile-username {
+  color: var(--accent-color);
+  margin-bottom: 18px;
+}
+
+.forum-profile-details {
+  display: grid;
+  gap: 8px;
+  text-align: left;
+}
+
+.forum-profile-details div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: rgba(128, 128, 128, 0.1);
+}
+
+.forum-profile-details span {
+  opacity: 0.65;
+}

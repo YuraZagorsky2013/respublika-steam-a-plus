@@ -11,9 +11,30 @@ document.addEventListener("DOMContentLoaded", async () => {
   const replyBanner = document.getElementById("reply-preview-banner");
   const replyPreviewText = document.getElementById("reply-preview-text");
   const btnCancelReply = document.getElementById("btn-cancel-reply");
+  const forumProfileModal = document.getElementById("modal-forum-profile");
+  const btnForumProfileClose = document.getElementById("btn-forum-profile-close");
 
   let activeReplyText = null;
   let totalMsgCount = 0;
+
+  window.showForumProfile = (profile) => {
+    if (!forumProfileModal) return;
+
+    const avatar = document.getElementById("forum-profile-avatar");
+    const fullName = [profile.firstName, profile.lastName].filter(Boolean).join(" ");
+    document.getElementById("forum-profile-name").textContent = profile.author || "Учень";
+    document.getElementById("forum-profile-username").textContent = profile.username ? `@${profile.username}` : "@невідомо";
+    document.getElementById("forum-profile-full-name").textContent = fullName || "Не вказано";
+    document.getElementById("forum-profile-grade").textContent = profile.grade || "Не вказано";
+    document.getElementById("forum-profile-nickname").textContent = profile.username ? `@${profile.username}` : "Не вказано";
+    avatar.innerHTML = profile.avatar
+      ? `<img src="${profile.avatar}" alt="Аватар користувача">`
+      : `<i data-lucide="user-round"></i>`;
+    forumProfileModal.classList.remove("hidden");
+    if (window.lucide) lucide.createIcons();
+  };
+
+  btnForumProfileClose?.addEventListener("click", () => forumProfileModal?.classList.add("hidden"));
 
   // 1. Онлайн-присутствие
   if (window.setupOnlinePresence) {
@@ -29,6 +50,15 @@ document.addEventListener("DOMContentLoaded", async () => {
     const msgCard = document.createElement("div");
     msgCard.className = `forum-msg-card glass-panel ${isAnimated ? 'morph-enter' : ''}`;
     msgCard.dataset.messageId = msgData.id || "";
+    msgCard.dataset.profile = JSON.stringify({
+      firstName: msgData.author_first_name || "",
+      lastName: msgData.author_last_name || "",
+      grade: msgData.author_grade || "",
+      username: msgData.author_username || "",
+      email: msgData.author_email || "",
+      author: msgData.author || "Учень",
+      avatar: msgData.avatar || ""
+    });
     
     let replyHTML = "";
     if (msgData.reply_to) {
@@ -41,10 +71,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     let avatarHTML = "";
     if (msgData.avatar) {
-      avatarHTML = `<img src="${msgData.avatar}" class="msg-avatar-img" alt="Avatar">`;
+      avatarHTML = `<button class="msg-avatar-button" type="button" title="Переглянути профіль"><img src="${msgData.avatar}" class="msg-avatar-img" alt="Avatar"></button>`;
     } else {
-      const initial = msgData.author ? msgData.author.charAt(0).toUpperCase() : 'Ю';
-      avatarHTML = `<div class="msg-avatar" style="background:#007aff;">${initial}</div>`;
+      avatarHTML = `<button class="msg-avatar-button msg-avatar-placeholder" type="button" title="Переглянути профіль"><i data-lucide="user-round"></i></button>`;
     }
 
     msgCard.innerHTML = `
@@ -195,6 +224,14 @@ document.addEventListener("DOMContentLoaded", async () => {
             countSpan.textContent = parseInt(countSpan.textContent || "0") + 1;
           }
           if (btnStickerToggle) animateFlyingEmoji(emoji, btnStickerToggle, reactBtn);
+      }
+    }
+
+    const avatarButton = e.target.closest(".msg-avatar-button");
+    if (avatarButton) {
+      const card = avatarButton.closest(".forum-msg-card");
+      if (card && window.showForumProfile) {
+        window.showForumProfile(JSON.parse(card.dataset.profile || "{}"));
       }
     }
 
