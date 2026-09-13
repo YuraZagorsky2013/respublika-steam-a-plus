@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>A+ Respublika STEAM</title>
+  
+  <link rel="stylesheet" href="css/grid.css">
+  <link rel="stylesheet" href="css/page_style.css">
+  <link rel="stylesheet" href="css/items.css">
+  <link rel="stylesheet" href="css/hotbar.css">
+  
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="light-mode liquid-glass-active smooth-actions">
+
+  <!-- Maintenance Overlay (5 Min Site Lock) -->
+  <div id="maintenance-overlay" class="maintenance-overlay hidden">
+    <div class="maintenance-card glass-panel">
+      <i data-lucide="lock" class="maintenance-icon"></i>
+      <h2>Сайт зачинено на технічні роботи</h2>
+      <p>Адміністратор тимчасово призупинив роботу платформи на 5 хвилин.</p>
+      <div id="maintenance-timer" class="maintenance-timer">05:00</div>
+    </div>
+  </div>
+
+  <!-- Dynamic Island -->
+  <div id="dynamic-island" class="dynamic-island hidden">
+    <div class="island-content">
+      <div class="spinner"></div>
+      <span class="island-text">connecting...</span>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header class="app-header">
+    <div class="header-left">
+      <h1 class="school-logo">A+ Respublika STEAM</h1>
+    </div>
+    <div class="header-right">
+      <span class="brand-tag">Respublika STEAM</span>
+      <button id="btn-settings-open" class="icon-btn morph-trigger" title="Налаштування">
+        <i data-lucide="settings"></i>
+      </button>
+      <button id="btn-profile-open" class="icon-btn profile-btn morph-trigger" title="Профіль">
+        <i data-lucide="user"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Pages Container -->
+  <main id="app-content" class="content-container">
+
+    <!-- PAGE: HOME -->
+    <section id="page-home" class="page-section active">
+      <div class="section-title-wrap">
+        <h2 data-i18n="hot_news">Гарячі новини 🔥</h2>
+      </div>
+
+      <div class="news-slider-container">
+        <div class="news-slider" id="hot-news-slider">
+          <!-- Новини підвантажуються з Supabase -->
+        </div>
+      </div>
+
+      <div class="section-title-wrap margin-top-30">
+        <h2 data-i18n="this_week">Цього тижня 📆</h2>
+      </div>
+
+      <div class="news-slider-container">
+        <div class="news-slider" id="week-news-slider">
+          <!-- Новини підвантажуються з Supabase -->
+        </div>
+      </div>
+
+      <div class="gap-50"></div>
+
+      <div class="accordion-group">
+        <div class="accordion-item open" id="accordion-aplus-social">
+          <button class="accordion-header">
+            <span><i data-lucide="share-2"></i> A+ Social Media</span>
+            <i data-lucide="chevron-down" class="accordion-icon"></i>
+          </button>
+          <div class="accordion-content">
+            <p class="social-info-text" data-i18n="aplus_social_desc">
+              Майбутні соціальні мережі школи та їх сайт-платформа. Наша платформа — це зручний дитячий варіант без бюрократії!
+            </p>
+            <ul class="feature-list">
+              <li data-i18n="feature_1">📍 Легка навігація школою</li>
+              <li data-i18n="feature_2">⚡ Актуальні шкільні події</li>
+              <li data-i18n="feature_3">🎒 Зручний розклад та збір рюкзака</li>
+              <li data-i18n="feature_4">🤝 Пошук друзів з інших класів</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="accordion-item" id="accordion-owner-social">
+          <button class="accordion-header">
+            <span><i data-lucide="code-2"></i> Site owner's social media</span>
+            <i data-lucide="chevron-down" class="accordion-icon"></i>
+          </button>
+          <div class="accordion-content">
+            <div class="owner-social-grid">
+              <a href="https://www.tiktok.com/@f_y_r_r_" target="_blank" class="social-sq-btn tiktok-bg">
+                <i data-lucide="video"></i>
+                <span>TikTok</span>
+              </a>
+              <a href="https://www.youtube.com/@Yur4ik2013" target="_blank" class="social-sq-btn youtube-bg">
+                <i data-lucide="video"></i>
+                <span>YouTube</span>
+              </a>
+              <a href="https://t.me/Yur4ik20130" target="_blank" class="social-sq-btn telegram-bg">
+                <i data-lucide="send"></i>
+                <span>Telegram</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer class="studio-footer">
+        yur4ik2013's studio, 2026©
+      </footer>
+    </section>
+
+    <!-- PAGE: MAP (Очищена) -->
+    <section id="page-map" class="page-section">
+      <div class="map-controls">
+        <div class="map-search-bar">
+          <i data-lucide="search"></i>
+          <input type="text" id="map-search-input" data-i18n="map_search_placeholder" placeholder="Пошук кабінету...">
+        </div>
+      </div>
+
+      <div class="map-view-card glass-panel" style="min-height: 350px; display: flex; align-items: center; justify-content: center; text-align: center; opacity: 0.7;">
+        <div>
+          <i data-lucide="map" style="width: 48px; height: 48px; margin-bottom: 10px; color: var(--accent-color);"></i>
+          <h3>Оновлення карти</h3>
+          <p>Карту тимчасово очищено для завантаження нового розширеного план-креслення школи.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- PAGE: FORUM -->
+    <section id="page-forum" class="page-section">
+      <div class="forum-stats-bar glass-panel">
+        <div class="stat-item">
+          <span class="online-indicator"></span>
+          <span><span data-i18n="forum_online">Онлайн:</span> <strong id="forum-online-count">1</strong></span>
+        </div>
+        <div class="stat-item">
+          <i data-lucide="message-square"></i>
+          <span><span data-i18n="forum_messages">Повідомлень:</span> <strong id="forum-messages-count">0</strong></span>
+        </div>
+      </div>
+
+      <div class="forum-feed" id="forum-feed"></div>
+
+      <div class="forum-input-dock-wrapper">
+        <div id="reply-preview-banner" class="reply-banner glass-panel hidden">
+          <div class="reply-banner-content">
+            <i data-lucide="reply" class="reply-icon"></i>
+            <div class="reply-text-wrap">
+              <span class="reply-label" data-i18n="reply_label">Відповідь на повідомлення:</span>
+              <span id="reply-preview-text" class="reply-snippet"></span>
+            </div>
+          </div>
+          <button id="btn-cancel-reply" class="cancel-reply-btn">&times;</button>
+        </div>
+
+        <div class="forum-input-bar glass-panel" id="forum-input-bar">
+          <button id="btn-sticker-toggle" class="sticker-btn" title="Стікери">
+            <i data-lucide="smile"></i>
+          </button>
+          <input type="text" id="forum-input-text" data-i18n="forum_input_placeholder" placeholder="Напишіть повідомлення..." autocomplete="off">
+          <button id="btn-forum-send" class="send-btn">
+            <i data-lucide="send"></i>
+          </button>
+
+          <div class="sticker-picker hidden" id="sticker-picker">
+            <span class="sticker-item">😎</span>
+            <span class="sticker-item">🔥</span>
+            <span class="sticker-item">🚀</span>
+            <span class="sticker-item">👍</span>
+            <span class="sticker-item">🎉</span>
+            <span class="sticker-item">📚</span>
+            <span class="sticker-item">💡</span>
+            <span class="sticker-item">⚡</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PAGE: LESSONS (Розклад) -->
+    <section id="page-lessons" class="page-section">
+      <div class="section-title-wrap">
+        <h2 data-i18n="lessons_title">Розклад уроків 📚</h2>
+      </div>
+      <div id="schedule-container" class="schedule-grid">
+        <!-- Підвантажується з Supabase -->
+      </div>
+    </section>
+
+    <!-- PAGE: INFO -->
+   <!-- PAGE: INFO -->
+    <section id="page-info" class="page-section">
+      <!-- Hero Banner -->
+      <div class="info-hero-card glass-panel">
+        <div class="hero-badge">A+ STEAM 2026</div>
+        <h2>A+ Respublika STEAM</h2>
+        <p>Сучасне інноваційне освітнє середовище для розвитку науки, технологій, інженерії, мистецтва та математики.</p>
+      </div>
+
+      <!-- Highlights Grid -->
+      <div class="info-grid margin-top-20">
+        <div class="info-card glass-panel">
+          <i data-lucide="cpu" class="info-card-icon"></i>
+          <h4>Технології & Кодинг</h4>
+          <p>Лабораторії робототехніки, 3D-моделювання, IT-дисципліни (Python, Front-end, Unity2D, Computer Science).</p>
+        </div>
+        <div class="info-card glass-panel">
+          <i data-lucide="trophy" class="info-card-icon"></i>
+          <h4>Спорт & STEAM</h4>
+          <p>Власний Падел-корт, сучасний спортивний комплекс, хакатони та TURBO-змагання щосеместру.</p>
+        </div>
+      </div>
+
+      <!-- FAQ Accordion Tabs -->
+      <div class="section-title-wrap margin-top-30">
+        <h2>Часті запитання (FAQ) ❓</h2>
+      </div>
+
+      <div class="faq-accordion-container margin-top-10" id="faq-accordion">
+        <div class="faq-item glass-panel">
+          <button class="faq-question">
+            <span><i data-lucide="clock"></i> Який графік навчального дня в A+ STEAM?</span>
+            <i data-lucide="chevron-down" class="faq-icon"></i>
+          </button>
+          <div class="faq-answer hidden">
+            <p>Уроки починаються о 09:00 та тривають до 16:05. З 13:25 до 14:25 передбачена велика обідня перерва. З 16:15 до 18:00 проходять гуртки, консультації з учителями та самопідготовка.</p>
+          </div>
+        </div>
+
+        <div class="faq-item glass-panel">
+          <button class="faq-question">
+            <span><i data-lucide="map-pin"></i> Як знайти потрібний кабінет або шафку?</span>
+            <i data-lucide="chevron-down" class="faq-icon"></i>
+          </button>
+          <div class="faq-answer hidden">
+            <p>Перейдіть у розділ «Карта» в нижньому хотбарі. Введіть номер кабінету (наприклад, 305) або діапазон шафок у пошуковий рядок для підсвічування на схематичному кресленні.</p>
+          </div>
+        </div>
+
+        <div class="faq-item glass-panel">
+          <button class="faq-question">
+            <span><i data-lucide="book-open"></i> Як працюють консультаційні години з вчителями?</span>
+            <i data-lucide="chevron-down" class="faq-icon"></i>
+          </button>
+          <div class="faq-answer hidden">
+            <p>Консультації проходять на 8-му уроці (15:20 - 16:05) за предметними групами. Детальний розклад консультацій доступний у вкладці «Розклад».</p>
+          </div>
+        </div>
+
+        <div class="faq-item glass-panel">
+          <button class="faq-question">
+            <span><i data-lucide="shield-alert"></i> Що робити, якщо виникли технічні збої на сайті?</span>
+            <i data-lucide="chevron-down" class="faq-icon"></i>
+          </button>
+          <div class="faq-answer hidden">
+            <p>Ви можете повідомити у шкільний чат у вкладці «Форум» або написати адміністратору. Також адміністрація може тимчасово зачиняти сайт на 5 хвилин для технічного обслуговування.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Gemini AI Teaser Block -->
+      <div class="ai-teaser-card glass-panel margin-top-30">
+        <div class="ai-teaser-header">
+          <i data-lucide="sparkles" class="ai-icon"></i>
+          <div>
+            <h3>A+ Gemini AI Assistant</h3>
+            <span class="ai-badge">Скоро у релізі ✨</span>
+          </div>
+        </div>
+        <p>Незабаром сюди буде підключено штучний інтелект на базі <strong>Google Gemini</strong>! Ви зможете ставити будь-які запитання щодо розкладу, шкільних правил та отримувати миттєву відповідь 24/7.</p>
+        <div class="ai-input-fake margin-top-15">
+          <input type="text" placeholder="Запитати Gemini AI про школу..." disabled>
+          <button disabled><i data-lucide="send"></i></button>
+        </div>
+      </div>
+
+     <!-- Contacts Card -->
+<div class="info-contacts-card glass-panel margin-top-20">
+  <h4>📍 Контакти та Рецепція</h4>
+  <p>✉️ Підтримка: <strong>yur4ik2013.studio@gmail.com</strong></p>
+  <p>🏫 Корпус: A+ Respublika STEAM</p>
+  <p>🕒 Графік рецепції: Пн-Пт 08:00 - 18:30</p>
+</div>
+      <div class="gap-50"></div>
+    </section>
+  </main>
+
+  <!-- Hotbar Navigation -->
+  <nav class="hotbar-wrapper">
+    <div class="hotbar" id="hotbar-container">
+      <div class="hotbar-glider" id="hotbar-glider"></div>
+      <button class="hotbar-item active" data-tab="home">
+        <i data-lucide="home"></i>
+        <span data-i18n="hotbar_home">Головна</span>
+      </button>
+      <button class="hotbar-item" data-tab="map">
+        <i data-lucide="map-pin"></i>
+        <span data-i18n="hotbar_map">Карта</span>
+      </button>
+      <button class="hotbar-item" data-tab="forum">
+        <i data-lucide="message-square"></i>
+        <span data-i18n="hotbar_forum">Форум</span>
+      </button>
+      <button class="hotbar-item" data-tab="lessons">
+        <i data-lucide="calendar"></i>
+        <span data-i18n="hotbar_lessons">Розклад</span>
+      </button>
+      <button class="hotbar-item" data-tab="info">
+        <i data-lucide="info"></i>
+        <span data-i18n="hotbar_info">Інфо</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Modal: Settings + Admin Panel -->
+  <div id="modal-settings" class="modal-overlay hidden morph-modal">
+    <div class="modal-card glass-panel">
+      <div class="modal-header">
+        <h3 data-i18n="settings_title">Налаштування</h3>
+        <button class="modal-close" id="btn-settings-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="setting-row">
+          <span data-i18n="dark_mode">Темна тема</span>
+          <label class="apple-switch">
+            <input type="checkbox" id="toggle-dark-mode">
+            <span class="slider"></span>
+          </label>
+        </div>
+        <div class="setting-row">
+          <span data-i18n="liquid_glass">Рідке скло</span>
+          <label class="apple-switch">
+            <input type="checkbox" id="toggle-liquid-glass" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+        <div class="setting-row">
+          <span data-i18n="language">Мова</span>
+          <select id="select-language" class="apple-select">
+            <option value="uk">Ukrainian</option>
+            <option value="en">English</option>
+            <option value="es">Spanish</option>
+            <option value="de">Germany</option>
+            <option value="fr">France</option>
+          </select>
+        </div>
+        <div class="setting-row">
+          <span data-i18n="smooth_actions">Плавні дії</span>
+          <label class="apple-switch">
+            <input type="checkbox" id="toggle-smooth-actions" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <!-- АДМІН ПАНЕЛЬ (Відкривається тільки для твоїх e-mail) -->
+        <div id="admin-settings-section" class="admin-panel-box hidden">
+          <h4>👑 Панель Адміністратора</h4>
+          <p class="admin-subtitle">Доступ дозволено для Юри Z.</p>
+
+          <button id="btn-admin-close-site" class="auth-btn btn-danger margin-top-10">
+            🔒 Зачинити сайт на 5 хвилин
+          </button>
+
+          <hr class="admin-divider">
+
+          <h5>Додати новину</h5>
+          <form id="form-admin-news" class="auth-form margin-top-10">
+            <input type="text" id="admin-news-title" class="auth-input" placeholder="Заголовок новини" required>
+            <input type="text" id="admin-news-desc" class="auth-input" placeholder="Опис новини" required>
+            <label class="setting-row" style="border:none; padding:4px 0;">
+              <span>Гаряча новина (Hot 🔥)</span>
+              <input type="checkbox" id="admin-news-hot">
+            </label>
+            <button type="submit" class="auth-btn btn-primary">Опублікувати новину</button>
+          </form>
+
+          <hr class="admin-divider">
+
+          <h5>Додати урок у розклад</h5>
+          <form id="form-admin-lesson" class="auth-form margin-top-10">
+            <select id="admin-lesson-day" class="apple-select" style="width:100%;">
+              <option value="Понеділок">Понеділок</option>
+              <option value="Вівторок">Вівторок</option>
+              <option value="Середа">Середа</option>
+              <option value="Четвер">Четвер</option>
+              <option value="П'ятниця">П'ятниця</option>
+            </select>
+            <input type="number" id="admin-lesson-num" class="auth-input" placeholder="Номер уроку (напр. 1)" required>
+            <input type="text" id="admin-lesson-subject" class="auth-input" placeholder="Предмет" required>
+            <input type="text" id="admin-lesson-room" class="auth-input" placeholder="Кабінет" required>
+            <input type="text" id="admin-lesson-time" class="auth-input" placeholder="Час (напр. 08:30)" required>
+            <button type="submit" class="auth-btn btn-primary">Додати в розклад</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Profile -->
+  <div id="modal-profile" class="modal-overlay hidden morph-modal">
+    <div class="modal-card glass-panel">
+      <div class="modal-header">
+        <h3 id="modal-profile-title" data-i18n="profile_title">Особистий профіль</h3>
+        <button class="modal-close" id="btn-profile-close">&times;</button>
+      </div>
+
+      <div id="view-profile-info" class="modal-body profile-body hidden">
+        <label for="edit-avatar-file" class="avatar-picker-container" title="Натисніть, щоб змінити фото">
+          <img id="edit-avatar-preview" src="https://api.dicebear.com/7.x/bottts/svg?seed=aplus" class="avatar-preview-img">
+          <span class="avatar-change-badge"><i data-lucide="camera"></i> <span data-i18n="change_avatar">Змінити аватар</span></span>
+        </label>
+        <input type="file" id="edit-avatar-file" accept="image/*" class="file-input-hidden">
+
+        <form id="form-edit-profile" class="auth-form">
+          <div class="profile-role-badge-wrap">
+            <span id="p-role-tag" class="profile-role-tag hidden">Викладач</span>
+          </div>
+          <input type="text" id="edit-firstname" class="auth-input" placeholder="Ім'я" required>
+          <input type="text" id="edit-lastname" class="auth-input" placeholder="Прізвище" required>
+          <input type="text" id="edit-username" class="auth-input" placeholder="Нікнейм" required readonly style="opacity:0.6;">
+          <input type="text" id="edit-grade" class="auth-input" placeholder="Клас (напр. 7-А)" required>
+          <input type="email" id="edit-email" class="auth-input" placeholder="Email" required readonly style="opacity:0.6;">
+          
+          <button type="submit" class="auth-btn btn-primary" data-i18n="btn_save">Зберегти зміни</button>
+          <button type="button" id="btn-logout" class="auth-btn btn-danger" data-i18n="btn_logout">Вийти з акаунта</button>
+        </form>
+      </div>
+
+      <div id="view-auth-register" class="modal-body hidden">
+        <label for="reg-avatar-file" class="avatar-picker-container">
+          <img id="reg-avatar-preview" src="https://api.dicebear.com/7.x/bottts/svg?seed=aplus1" class="avatar-preview-img">
+          <span class="avatar-change-badge"><i data-lucide="image"></i> <span data-i18n="select_avatar">Обрати аватар</span></span>
+        </label>
+        <input type="file" id="reg-avatar-file" accept="image/*" class="file-input-hidden">
+
+        <form id="form-register" class="auth-form">
+          <input type="text" id="reg-firstname" class="auth-input" placeholder="Ім'я" required>
+          <input type="text" id="reg-lastname" class="auth-input" placeholder="Прізвище" required>
+          <input type="text" id="reg-username" class="auth-input" placeholder="Нікнейм (@nick)" required>
+          <input type="text" id="reg-grade" class="auth-input" placeholder="Клас (напр. 7-А)" required>
+          <input type="email" id="reg-email" class="auth-input" placeholder="Email" required>
+          <input type="password" id="reg-password" class="auth-input" placeholder="Пароль" required>
+          
+          <button type="submit" class="auth-btn btn-primary" data-i18n="btn_next">Далі</button>
+          <button type="button" id="btn-to-login" class="auth-btn btn-secondary" data-i18n="btn_have_account">Уже є акаунт</button>
+        </form>
+      </div>
+
+      <div id="view-auth-login" class="modal-body hidden">
+        <form id="form-login" class="auth-form margin-top-10">
+          <input type="email" id="login-email" class="auth-input" placeholder="Email" autocomplete="email" required>
+          <input type="password" id="login-password" class="auth-input" placeholder="Пароль" required>
+          
+          <button type="submit" class="auth-btn btn-primary" data-i18n="btn_next">Далі</button>
+          <button type="button" id="btn-to-register" class="auth-btn btn-secondary" data-i18n="btn_no_account">Немає акаунта</button>
+        </form>
+      </div>
+
+      <div id="view-auth-verify" class="modal-body hidden">
+        <p id="verification-hint">Ми надіслали 6-значний код на вашу електронну пошту.</p>
+        <form id="form-verify-email" class="auth-form margin-top-10">
+          <input type="text" id="verification-code" class="auth-input verification-code-input" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" minlength="6" maxlength="6" placeholder="Код із 6 цифр" required>
+          <button type="submit" class="auth-btn btn-primary">Підтвердити код</button>
+          <button type="button" id="btn-resend-code" class="auth-btn btn-secondary">Надіслати код ще раз</button>
+          <button type="button" id="btn-cancel-verification" class="auth-btn btn-secondary">Назад</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/supabase.js"></script>
+  <script src="js/items.js"></script>
+  <script src="js/profile.js"></script>
+  <script src="js/settings.js"></script>
+  <script src="js/home.js"></script>
+  <script src="js/map.js"></script>
+  <script src="js/forum.js"></script>
+  <script src="js/lessons.js"></script>
+  <script src="js/info.js"></script>
+  <script src="js/hotbar.js"></script>
+  <script src="js/global.js"></script>
+</body>
+</html>
