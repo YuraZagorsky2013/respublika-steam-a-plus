@@ -87,7 +87,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     let profile = existingProfile;
-    const pendingProfile = JSON.parse(sessionStorage.getItem(pendingProfileKey) || "null");
+    const pendingProfile = JSON.parse(localStorage.getItem(pendingProfileKey) || "null");
 
     if (!profile && pendingProfile && pendingProfile.email === authUser.email) {
       const { data: savedProfile, error: saveError } = await window.dbClient
@@ -102,7 +102,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
       profile = savedProfile;
-      sessionStorage.removeItem(pendingProfileKey);
+      localStorage.removeItem(pendingProfileKey);
     }
 
     if (!profile) {
@@ -208,13 +208,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     try {
       if (!window.dbClient) throw new Error("Supabase недоступний.");
-      sessionStorage.setItem(pendingProfileKey, JSON.stringify(profile));
+      localStorage.setItem(pendingProfileKey, JSON.stringify(profile));
 
       await sendMagicLink(email, true);
       modalProfile.classList.add("hidden");
       showMessage("Посилання для входу надіслано на вашу електронну пошту.");
     } catch (error) {
-      sessionStorage.removeItem(pendingProfileKey);
+      localStorage.removeItem(pendingProfileKey);
       showMessage(`Не вдалося зареєструватися: ${error.message}`);
     } finally {
       setFormBusy(formRegister, false);
