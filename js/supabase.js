@@ -181,3 +181,47 @@ function subscribeToRealtimeTable(table, onChange, filter = undefined) {
 
   realtimeChannels.set(table, channel);
 }
+
+async function fetchSupabaseReactionCounts(messageIds) {
+  if (!dbClient || !messageIds.length) return new Map();
+
+  const { data, error } = await dbClient
+    .from('message_reactions')
+    .select('message_id')
+    .in('message_id', messageIds.map(String));
+
+  if (error) {
+    console.error("Помилка завантаження реакцій:", error);
+    return new Map();
+  }
+
+  return data.reduce((counts, reaction) => {
+    const messageId = String(reaction.message_id);
+    counts.set(messageId, (counts.get(messageId) || 0) + 1);
+    return counts;
+  }, new Map());
+}
+
+async function saveSupabaseReaction(messageId, emoji) {
+  if (!dbClient) return false;
+
+  const { data: authData } = await dbClient.auth.getUser();
+  const savedUser = JSON.parse(localStorage.getItem("aplus_user") || "{}");
+  const userKey = authData.user?.id || savedUser.email;
+  if (!userKey) return false;
+
+  const { error } = await dbClient
+    .from('message_reactions')
+    .insert([{ message_id: String(messageId), user_key: userKey, emoji }]);
+
+  if (error && error.code !== '23505') {
+    console.error("Помилка збереження реакції:", error);
+    return false;
+  }
+
+  return !error;
+}
+
+function subscribeToRealtimeReactions(onChange) {
+  subscribeToRealtimeTable('message_reactions', onChange);
+}

@@ -60,13 +60,14 @@ document.addEventListener("DOMContentLoaded", () => {
     alert(message);
   }
 
-  async function sendMagicLink(email, shouldCreateUser = false) {
+  async function sendMagicLink(email, shouldCreateUser = false, profile = null) {
     if (!window.dbClient) throw new Error("Supabase недоступний.");
     const { error } = await window.dbClient.auth.signInWithOtp({
       email,
       options: {
         emailRedirectTo: redirectUrl,
-        shouldCreateUser
+        shouldCreateUser,
+        data: profile ? { profile } : undefined
       }
     });
     if (error) throw error;
@@ -88,11 +89,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let profile = existingProfile;
     const pendingProfile = JSON.parse(localStorage.getItem(pendingProfileKey) || "null");
+    const metadataProfile = authUser.user_metadata?.profile;
+    const profileToCreate = pendingProfile?.email === authUser.email
+      ? pendingProfile
+      : metadataProfile?.email === authUser.email
+        ? metadataProfile
+        : null;
 
-    if (!profile && pendingProfile && pendingProfile.email === authUser.email) {
+    if (!profile && profileToCreate) {
       const { data: savedProfile, error: saveError } = await window.dbClient
         .from("profiles")
-        .insert([pendingProfile])
+        .insert([profileToCreate])
         .select("first_name,last_name,username,grade,email,avatar")
         .single();
 
@@ -210,7 +217,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!window.dbClient) throw new Error("Supabase недоступний.");
       localStorage.setItem(pendingProfileKey, JSON.stringify(profile));
 
-      await sendMagicLink(email, true);
+      await sendMagicLink(email, true, profile);
       modalProfile.classList.add("hidden");
       showMessage("Посилання для входу надіслано на вашу електронну пошту.");
     } catch (error) {

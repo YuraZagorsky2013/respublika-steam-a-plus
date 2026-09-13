@@ -28,6 +28,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const msgCard = document.createElement("div");
     msgCard.className = `forum-msg-card glass-panel ${isAnimated ? 'morph-enter' : ''}`;
+    msgCard.dataset.messageId = msgData.id || "";
     
     let replyHTML = "";
     if (msgData.reply_to) {
@@ -61,7 +62,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       <div class="msg-actions">
         <div class="reaction-wrapper">
           <button class="react-btn main-react-btn" data-emoji="❤️">
-            ❤️ <span class="count">0</span>
+            ❤️ <span class="count">${msgData.reaction_count || 0}</span>
           </button>
           <div class="reactions-popup">
             <span class="popup-emoji" data-emoji="❤️">❤️</span>
@@ -93,8 +94,14 @@ document.addEventListener("DOMContentLoaded", async () => {
   // 3. Загрузка сообщений
   if (window.fetchSupabaseMessages) {
     const existingMessages = await fetchSupabaseMessages();
+    const reactionCounts = window.fetchSupabaseReactionCounts
+      ? await fetchSupabaseReactionCounts(existingMessages.map(message => message.id))
+      : new Map();
     if (forumFeed) forumFeed.innerHTML = "";
-    existingMessages.forEach(msg => renderMessage(msg, false));
+    existingMessages.forEach(msg => renderMessage({
+      ...msg,
+      reaction_count: reactionCounts.get(String(msg.id)) || 0
+    }, false));
   }
 
   // 4. Подписка Realtime
@@ -102,6 +109,15 @@ document.addEventListener("DOMContentLoaded", async () => {
     subscribeToRealtimeMessages((newMsg) => {
       renderMessage(newMsg, true);
       window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    });
+  }
+
+  if (window.subscribeToRealtimeReactions) {
+    subscribeToRealtimeReactions(({ eventType, new: reaction }) => {
+      if (eventType !== "INSERT") return;
+      const card = forumFeed?.querySelector(`[data-message-id="${reaction.message_id}"]`);
+      const countSpan = card?.querySelector(".main-react-btn .count");
+      if (countSpan) countSpan.textContent = Number(countSpan.textContent || 0) + 1;
     });
   }
 
@@ -169,9 +185,16 @@ document.addEventListener("DOMContentLoaded", async () => {
       const emoji = reactBtn.getAttribute("data-emoji");
       const card = reactBtn.closest(".forum-msg-card");
       if (card) {
+          const messageId = card.getAttribute("data-message-id");
         const countSpan = card.querySelector(".main-react-btn .count");
-        if (countSpan) countSpan.textContent = parseInt(countSpan.textContent || "0") + 1;
-        if (btnStickerToggle) animateFlyingEmoji(emoji, btnStickerToggle, reactBtn);
+          if (window.saveSupabaseReaction && messageId) {
+            window.saveSupabaseReaction(messageId, emoji).then(saved => {
+              if (!saved) alert("Не вдалося зберегти реакцію.");
+            });
+          } else if (countSpan) {
+            countSpan.textContent = parseInt(countSpan.textContent || "0") + 1;
+          }
+          if (btnStickerToggle) animateFlyingEmoji(emoji, btnStickerToggle, reactBtn);
       }
     }
 
