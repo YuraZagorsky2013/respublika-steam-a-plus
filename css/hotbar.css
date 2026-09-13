@@ -1,0 +1,94 @@
+.hotbar-wrapper {
+  position: fixed;
+  bottom: 20px;
+  z-index: 90;
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.hotbar-wrapper:hover {
+  transform: scale(1.04);
+}
+
+@media (max-width: 768px) {
+  .hotbar-wrapper {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  .hotbar-wrapper:hover {
+    transform: translateX(-50%) scale(1.04);
+  }
+}
+
+@media (min-width: 769px) {
+  .hotbar-wrapper {
+    left: 30px;
+  }
+}
+
+.hotbar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--card-bg);
+  border: 1px solid var(--glass-border);
+  padding: 6px;
+  border-radius: 28px;
+  box-shadow: 0 10px 30px var(--shadow-color);
+  overflow: hidden; /* Гарантирует, что плашка выделителя не вылезет за скругленный край */
+}
+
+.hotbar-glider {
+  position: absolute;
+  top: 6px;
+  bottom: 6px;
+  left: 0;
+  width: 0;
+  background: rgba(0, 122, 255, 0.15);
+  border-radius: 20px;
+  z-index: 1;
+  transition: left 0.35s cubic-bezier(0.2, 0.8, 0.2, 1),
+              width 0.35s cubic-bezier(0.2, 0.8, 0.2, 1),
+              transform 0.18s ease;
+  pointer-events: none;
+}
+
+.hotbar-glider.stretching {
+  transform: scaleX(1.1);
+}
+
+.hotbar-item {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  color: var(--text-color);
+  opacity: 0.6;
+  padding: 8px 14px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 0.75rem;
+  gap: 4px;
+  transition: opacity 0.2s ease, transform 0.2s ease, color 0.2s ease;
+}
+
+.hotbar-item i {
+  width: 20px;
+  height: 20px;
+}
+
+.hotbar-item:hover {
+  opacity: 0.9;
+  transform: translateY(-2px);
+}
+
+.hotbar-item.active {
+  opacity: 1;
+  color: var(--accent-color);
+}
+
+
