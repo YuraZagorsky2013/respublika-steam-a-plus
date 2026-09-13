@@ -5,6 +5,7 @@ const SUPABASE_ANON_KEY = "sb_publishable_kpJHpzz0TFvF0j7pUliekw_bD7UmQc8";
 // Переименовываем переменную в dbClient, чтобы избежать конфликта с CDN-библиотекой
 let dbClient = null;
 const realtimeChannels = new Map();
+let presenceChannel = null;
 
 if (window.supabase && window.supabase.createClient) {
   dbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -21,7 +22,16 @@ function setupOnlinePresence(onUpdate) {
     return;
   }
 
-  const room = dbClient.channel('online-users');
+  if (presenceChannel) return;
+
+  const savedUser = JSON.parse(localStorage.getItem("aplus_user") || "null");
+  const presenceKey = savedUser?.email
+    ? `user:${savedUser.email.toLowerCase()}`
+    : `guest:${crypto.randomUUID()}`;
+  const room = dbClient.channel('online-users', {
+    config: { presence: { key: presenceKey } }
+  });
+  presenceChannel = room;
   
   room
     .on('presence', { event: 'sync' }, () => {
