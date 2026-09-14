@@ -6,6 +6,8 @@ const SUPABASE_ANON_KEY = "sb_publishable_kpJHpzz0TFvF0j7pUliekw_bD7UmQc8";
 let dbClient = null;
 const realtimeChannels = new Map();
 let presenceChannel = null;
+let presenceSetupPromise = null;
+let onlinePresenceListener = null;
 
 if (window.supabase && window.supabase.createClient) {
   dbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -15,35 +17,88 @@ if (window.supabase && window.supabase.createClient) {
   console.log("⚠️ Ошибка: библиотека Supabase SDK не загрузилась из CDN.");
 }
 
-// Отслеживание онлайна через Supabase Realtime Presence
-function setupOnlinePresence(onUpdate) {
+// Отслеживание онлайна через Supabase Realtime Presence.
+// В канал попадает только пользователь с действующей сессией Supabase Auth.
+function publishOnlineCount(count) {
+  if (onlinePresenceListener) onlinePresenceListener(count);
+}
+
+async function stopOnlinePresence() {
+  const channel = presenceChannel;
+  presenceChannel = null;
+  publishOnlineCount(0);
+
+  if (channel && dbClient) {
+    await dbClient.removeChannel(channel);
+  }
+}
+
+async function setupOnlinePresence(onUpdate) {
+  if (typeof onUpdate === "function") onlinePresenceListener = onUpdate;
+
   if (!dbClient) {
-    onUpdate(1);
+    publishOnlineCount(0);
     return;
   }
 
   if (presenceChannel) return;
+  if (presenceSetupPromise) return presenceSetupPromise;
 
-  const savedUser = JSON.parse(localStorage.getItem("aplus_user") || "null");
-  const presenceKey = savedUser?.email
-    ? `user:${savedUser.email.toLowerCase()}`
-    : `guest:${crypto.randomUUID()}`;
-  const room = dbClient.channel('online-users', {
-    config: { presence: { key: presenceKey } }
-  });
-  presenceChannel = room;
-  
-  room
-    .on('presence', { event: 'sync' }, () => {
-      const newState = room.presenceState();
-      const onlineCount = Object.keys(newState).length;
-      onUpdate(onlineCount);
-    })
-    .subscribe(async (status) => {
-      if (status === 'SUBSCRIBED') {
-        await room.track({ online_at: new Date().toISOString() });
+  presenceSetupPromise = (async () => {
+    // Не доверяем localStorage: только getUser() подтверждает действующую Auth-сессию.
+    const { data: authData, error } = await dbClient.auth.getUser();
+    const authUser = authData?.user;
+    if (error || !authUser?.id) {
+      publishOnlineCount(0);
+      return;
+    }
+
+    const room = dbClient.channel('online-users', {
+      config: {
+        private: true,
+        // Один ключ на Auth user id: несколько вкладок одного аккаунта считаются как один человек.
+        presence: { key: `user:${authUser.id}` }
       }
     });
+    presenceChannel = room;
+
+    room
+      .on('presence', { event: 'sync' }, () => {
+        const onlineCount = Object.keys(room.presenceState()).length;
+        publishOnlineCount(onlineCount);
+      })
+      .subscribe(async (status, subscribeError) => {
+        if (status === 'SUBSCRIBED') {
+          await room.track({ online_at: new Date().toISOString() });
+          return;
+        }
+
+        if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') {
+          console.error('Не вдалося підключити захищений канал онлайна:', subscribeError);
+          if (presenceChannel === room) {
+            presenceChannel = null;
+            publishOnlineCount(0);
+          }
+        }
+      });
+  })().finally(() => {
+    presenceSetupPromise = null;
+  });
+
+  return presenceSetupPromise;
+}
+
+// После входа канал подключается, после выхода — немедленно исключается из онлайна.
+if (dbClient) {
+  dbClient.auth.onAuthStateChange((event, session) => {
+    window.setTimeout(() => {
+      if (event === 'SIGNED_OUT' || !session) {
+        stopOnlinePresence();
+      } else if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
+        setupOnlinePresence();
+      }
+    }, 0);
+  });
 }
 
 // Загрузка сообщений из таблицы "messages"
